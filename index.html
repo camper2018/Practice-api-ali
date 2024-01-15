@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Nutrition Finder</title>
+    <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+    <h1>Edamam Food and Grocery Database API</h1>
+    <form id="form">
+        <input id="api-key" class="input-text" type="password"placeholder="Enter X-RapidAPI-Key"required/>
+        <input id="api-host" class="input-text" type="password"placeholder="Enter X-RapidAPI-Host"required/>
+        <input type="text" id="text" required/>
+        <button id="submit">Enter</button>
+    </form>
+    <div id="response">
+    </div>
+    <table id="nutrition-facts">
+        <caption>
+            Nutritional Facts
+        </caption>
+        <thead>
+            <tr>
+                <th scope="col">Energy</th>
+                <th scope="col">Protein</th>
+                <th scope="col">Fats</th>
+                <th scope="col">Carbs</th>
+                <th scope="col">Fiber</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="data"></tr>
+       </tbody>
+    </table>
+    <script src="./script.js"></script>
+</body>
+
+</html>
