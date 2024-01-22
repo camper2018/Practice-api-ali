@@ -80,3 +80,42 @@ async function getNutritionInfo(inputText) {
         document.getElementById('response').innerHTML = `<h2 style="color: red">${error.message}</h2>`;
     }
 }
+
+/***************************** Using Worker Example **************************/
+const catImagesContainer = document.querySelector("#image-result");
+const getCatDogImagesBtn = document.getElementById('catdog-images-btn');
+const dogImagesContainer =  document.getElementById('dog-images-result');
+getCatDogImagesBtn.addEventListener("click", getCatDogImages);
+const catImages = [];
+const dogImages = [];
+const worker = new Worker('./worker.js');
+const getImagesBtn = document.getElementById('get-images-btn');
+getImagesBtn.addEventListener("click", (e)=> {
+  const number = document.getElementById('number').value;
+  worker.postMessage({
+    command: "get cat images",
+    number: parseInt(number, 10),
+});
+ 
+})
+
+worker.addEventListener("message", (message) => {
+    const imagesEl = message.data.result.map(cat=> `<img src=${cat.url} width="200px" alt="cat image"></img>` );
+    catImagesContainer.innerHTML = imagesEl;
+    worker.terminate();
+});
+
+
+async function getCatDogImages(){
+    const limit = document.getElementById('limit').value;
+    const response = await fetch(`http://localhost:3000/catdogapi/${limit}`)
+    const data = await response.json();
+    data[0].forEach(cat => {
+        catImages.push(cat.url);
+    });
+    data[1].forEach(dog=> {
+        dogImages.push(dog.url);
+    });
+   catImagesContainer.innerHTML = catImages.map(image =>`<img src=${image} alt="cat image" width="200px"></img>` );
+   dogImagesContainer.innerHTML = dogImages.map(image =>`<img src=${image} alt="dog image" width="200px"></img>` );
+}
