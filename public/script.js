@@ -1,5 +1,3 @@
-const hints= [];
-let selectedData;
 const h1El = document.createElement('h1');
 const responseDiv = document.getElementById('response');
 const tableEl = document.getElementById('nutrition-facts');
@@ -7,7 +5,12 @@ const reloadBtn = document.getElementById('reload-btn');
 const dataRow = document.getElementById('data');
 const dropdownEl = document.createElement("select");
 const formEl = document.getElementById('form');
+const hints= [];
+let selectedData;
+
+// event listeners
 dropdownEl.setAttribute("class", "dropdown");
+
 dropdownEl.addEventListener("change", (e)=> {
     const index =  e.target.value;
     selectedData = hints[index];
@@ -53,6 +56,8 @@ formEl.addEventListener("submit", (e)=> {
    getNutritionInfo(inputText);
   
 })
+
+// functions 
 function clearDOM(){
   window.location.reload();
 }
@@ -119,3 +124,29 @@ async function getCatDogImages(){
    catImagesContainer.innerHTML = catImages.map(image =>`<img src=${image} alt="cat image" width="200px"></img>` );
    dogImagesContainer.innerHTML = dogImages.map(image =>`<img src=${image} alt="dog image" width="200px"></img>` );
 }
+
+
+// another example Promise.all(), Promise.any(), promise.race();
+// also see server.js for promise.all() and async-await
+const todoUrl = 'https://jsonplaceholder.typicode.com/todos/1';
+const postUrl = 'https://jsonplaceholder.typicode.com/posts/1';
+const commentUrl = 'https://jsonplaceholder.typicode.com/posts/1/comments';
+const urls = [postUrl, todoUrl, commentUrl];
+function fetchUrl(url){
+   return new Promise((resolve, reject)=> {
+      fetch(url)
+      .then(res => res.json())
+      .then(data => resolve(data))
+   })
+}
+const fetchPromises = urls.map(url => fetchUrl(url));
+
+Promise.all(fetchPromises)
+    .then(response => console.log("All settled promises", response))
+    .catch(e => console.error(e));
+Promise.any(fetchPromises)
+    .then(response => console.log("first settled promise:", response))
+    .catch(e => console.error(e));
+Promise.race(fetchPromises)
+    .then(response => console.log("First in race: ", response))
+    .catch(e => console.error(e));

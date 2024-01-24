@@ -51,15 +51,23 @@ app.get("/catapi/:limit",  async (req, res) => {
 
 /***********   Promise.all Practice  ********************/
 // fetches cat and dog images from catapi and dogapi 
-app.get("/catdogapi/:limit", async (req, res) => {
+app.get("/catdogapi/:limit", (req, res) => {
     const key = process.env.CAT_API_KEY;
     const limit = req.params.limit;
-    const response1 = await fetch(`https://api.thecatapi.com/v1/images/search?limit=${limit}&api_key=${key}`);
-    const response2 = await fetch(`https://api.thedogapi.com/v1/images/search?limit=${limit}&api_key=${key}`);
-    Promise.all([response1.json(), response2.json()])
-    .then(data => res.json(data))
-    .catch(error => console.error(error))
-    
+    const catUrl = `https://api.thecatapi.com/v1/images/search?limit=${limit}&api_key=${key}`;
+    const dogUrl = `https://api.thedogapi.com/v1/images/search?limit=${limit}&api_key=${key}`;
+    const urls = [catUrl, dogUrl];
+    const fetchImages = (url)=> {
+        return new Promise((resolve, reject)=> {
+            fetch(url)
+            .then(response => response.json())
+            .then(data => resolve(data))
+        })
+    }
+    const imagePromises = Promise.all(urls.map(url => fetchImages(url)));
+    imagePromises
+    .then (response => res.json(response))
+    .catch(error => console.error(error));
 })
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
